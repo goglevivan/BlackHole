@@ -2,6 +2,7 @@ import config
 import random
 import telebot
 import requests
+import time
 from bs4 import BeautifulSoup
 bot = telebot.TeleBot(config.token)
 
@@ -92,6 +93,7 @@ def mirrormessage(message):
     elif message.text == '/rand':
         res = money.rand()
         bot.send_message(message.chat.id, res + '- ваше число')
+
     else:
         bot.send_message(message.chat.id,'Введите /help для получения информации')
 if __name__ =='__main__':
