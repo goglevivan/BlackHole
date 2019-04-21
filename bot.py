@@ -1,37 +1,17 @@
 import config
-import random
+
 import telebot
 import requests
-import time
-from bs4 import BeautifulSoup
+import metods
+
 bot = telebot.TeleBot(config.token)
 
-class Prsr:
-    def get_html(url):
-        r = requests.get(url)
-        return r.text
+try:
+    url_my_404 ='www.ivgo180419.com'
+    print(requests.get(url_my_404))
+except:
+    print("Error")
 
-    def get_data(html):
-        soup = BeautifulSoup(html, 'lxml')
-        h1 = soup.text
-        return h1
-class money:
-    def get_money(y):
-        a = Prsr
-        url = "http://www.nbrb.by/API/ExRates/Rates/"+str(y)
-        data1 = a.get_html(url)
-        dct1 = {}
-        dct1 = eval(data1)
-        return str(dct1["Cur_OfficialRate"])
-    def history():
-        a = Prsr
-        url = "http://www.nbrb.by/API/ExRates/Rates/145?onDate=2017-7-6"
-        data1 = a.get_html(url)
-        dct1 = {}
-        dct1 = eval(data1)
-        return str(dct1["Cur_OfficialRate"])
-    def rand():
-        return(str(random.randint(1,10)))
 
 
 @bot.message_handler(content_types=["text"])
@@ -40,12 +20,12 @@ def mirrormessage(message):
     def his():
         bot.send_message(message.chat.id, 'Введите дату в формате 2016-7-5')
         date=message.text
-        res = money.history(date)
+        res = metods.money.history(date)
         bot.send_message(message.chat.id, res+' BLR за 1$')
 
-    a = Prsr
+    a = metods.Prsr
     if message.text == '/dol':
-        res = money.get_money(145)
+        res = metods.money.get_money(145)
         bot.send_message(message.chat.id, res+' BLR за 1$')
     elif message.text == '/help':
         help_list = '''
@@ -63,35 +43,35 @@ def mirrormessage(message):
         '''
         bot.send_message(message.chat.id, help_list)
     elif message.text == '/eur':
-        res = money.get_money(292)
+        res = metods.money.get_money(292)
         bot.send_message(message.chat.id, res + ' BLR за 1€')
     elif message.text == '/pln':
-        res = money.get_money(293)
+        res = metods.money.get_money(293)
         bot.send_message(message.chat.id, res + ' BLR за 10zł')
     elif message.text == '/dkk':
-        res = money.get_money(291)
+        res = metods.money.get_money(291)
         bot.send_message(message.chat.id, res + ' BLR за 10kr')
     elif message.text == '/rub':
-        res = money.get_money(298)
+        res = metods.money.get_money(298)
         bot.send_message(message.chat.id, res + ' BLR за 100₽')
     elif message.text == '/czk':
-        res = money.get_money(305)
+        res = metods.money.get_money(305)
         bot.send_message(message.chat.id, res + ' BLR за 100Kč')
 
     elif message.text == '/jpy':
-        res = money.get_money(295)
+        res = metods.money.get_money(295)
         bot.send_message(message.chat.id, res + ' BLR за 100¥')
     elif message.text == '/cny':
-        res = money.get_money(304)
+        res = metods.money.get_money(304)
         bot.send_message(message.chat.id, res + ' BLR за 10¥')
     elif message.text == '/uah':
-        res = money.get_money(290)
+        res = metods.money.get_money(290)
         bot.send_message(message.chat.id, res + ' BLR за 100₴')
     elif message.text == '/historydol':
-        res = money.history()
+        res = metods.money.history()
         bot.send_message(message.chat.id, res + ' BLR за 1$  2017-7-6')
     elif message.text == '/rand':
-        res = money.rand()
+        res = metods.money.rand()
         bot.send_message(message.chat.id, res + '- ваше число')
 
     else:
