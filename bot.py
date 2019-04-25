@@ -3,20 +3,25 @@ import config
 import telebot
 import requests
 import metods
-
+import sqlite3
 bot = telebot.TeleBot(config.token)
 
-try:
-    url_my_404 ='www.ivgo180419.com'
-    print(requests.get(url_my_404))
-except:
-    print("Error")
+
 
 
 
 @bot.message_handler(content_types=["text"])
 
 def mirrormessage(message):
+    conn = sqlite3.connect('my.db')
+    c = conn.cursor()
+    c.execute( 'CREATE TABLE if not EXISTS message(id INTEGER PRIMARY  KEY AUTOINCREMENT,msg TEXT);')
+    zn = message.text
+    c.executescript('insert into message("msg") values("'+message.text+'");')
+    c.close()
+    conn.close()
+    conn = sqlite3.connect('my.db')
+    c = conn.cursor()
     def his():
         bot.send_message(message.chat.id, 'Введите дату в формате 2016-7-5')
         date=message.text
@@ -40,6 +45,7 @@ def mirrormessage(message):
 /uah - узнать курс украинских гривен на сегодняшний день
 /historydol - узнать курс доллара  на 2017-7-6
 /rand - выводит рандомное число от 0 до 10
+/five - что писали боту пять сообщений назад 
         '''
         bot.send_message(message.chat.id, help_list)
     elif message.text == '/eur':
@@ -74,7 +80,28 @@ def mirrormessage(message):
         res = metods.money.rand()
         bot.send_message(message.chat.id, res + '- ваше число')
 
+    elif message.text == '/five':
+        c.execute('select id from message order by id desc limit 1;')
+        num = c.fetchall()
+        print(num)
+        num = num[0]
+        print (num)
+        num =num[0]
+        num = int(num)
+
+        if num < 5:
+            bot.send_message(message.chat.id, 'ничего')
+        else:
+            num = num - 5
+            num = str(num)
+            c.execute('select msg from message where id='+num+';')
+            res = c.fetchall()
+            bot.send_message(message.chat.id, res )
+
+
     else:
         bot.send_message(message.chat.id,'Введите /help для получения информации')
+    c.close()
+    conn.close()
 if __name__ =='__main__':
     bot.polling(none_stop=True)
